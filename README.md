@@ -25,3 +25,19 @@ Require and use the gem in your application:
 ```ruby
 require 'cf-app-utils'
 ```
+
+### CF::App::Credentials.find\_by\_service\_*
+
+Returns the credentials hash for a given service that you have bound to
+your application.
+
+```ruby
+# Get credentials for the service with the given name
+CF::App::Credentials.find_by_service_name('master-db')
+
+# Get credentials for the first service with the given tag
+CF::App::Credentials.find_by_service_tag('relational')
+
+# Get credentials for the first service with the given label
+CF::App::Credentials.find_by_service_label('cleardb')
+```
