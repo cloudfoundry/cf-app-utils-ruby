@@ -57,6 +57,33 @@ describe CF::App::Credentials do
                     'password' => '3a9c2eb0ed895ab1'
                 }
             }
+        ],
+
+        'github-repo-2' => [
+            {
+                'name' => 'github-repository-123',
+                'label' => 'github-repo-2',
+                'tags' => [
+                    'github'
+                ],
+                'plan' => 'free',
+                'credentials' => {
+                    'username' => 'octocat',
+                    'access_token' => 'some-token'
+                }
+            },
+            {
+                'name' => 'github-repository-456',
+                'label' => 'github-repo-2',
+                'tags' => [
+                    'github'
+                ],
+                'plan' => 'free',
+                'credentials' => {
+                    'username' => 'octocat',
+                    'access_token' => 'some-token'
+                }
+            }
         ]
     }
   end
@@ -121,7 +148,19 @@ describe CF::App::Credentials do
 
         'github-repo-2' => [
             {
-                'name' => 'github-repository',
+                'name' => 'github-repository-123',
+                'label' => 'github-repo-2',
+                'tags' => [
+                    'github'
+                ],
+                'plan' => 'free',
+                'credentials' => {
+                    'username' => 'octocat',
+                    'access_token' => 'some-token'
+                }
+            },
+            {
+                'name' => 'github-repository-456',
                 'label' => 'github-repo-2',
                 'tags' => [
                     'github'
@@ -132,8 +171,7 @@ describe CF::App::Credentials do
                     'access_token' => 'some-token'
                 }
             }
-        ]
-    }
+        ]}
   end
 
   describe 'v1 format' do
@@ -168,6 +206,28 @@ describe CF::App::Credentials do
         expect(CF::App::Credentials.find_by_service_label('rediscloud-dev')).to eq(vcap_services['rediscloud-dev-n/a'][0]['credentials'])
         expect(CF::App::Credentials.find_by_service_label('redis')).to be_nil
         expect(CF::App::Credentials.find_by_service_label('non-existent')).to be_nil
+      end
+    end
+
+    describe '.find_all_by_service_label' do
+      it 'returns all services with the given label' do
+        expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
+        expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services['rediscloud-dev-n/a'][0]['credentials']])
+        expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
+                                                                                            vcap_services['github-repo-2'][0]['credentials'],
+                                                                                            vcap_services['github-repo-2'][1]['credentials']
+                                                                                        ])
+      end
+    end
+
+    describe '.find_all_by_tag' do
+      it 'returns all services with the given tag' do
+        expect(CF::App::Credentials.find_all_by_service_tag('non-existent')).to eq([])
+        expect(CF::App::Credentials.find_all_by_service_tag('redis')).to eq([vcap_services['rediscloud-dev-n/a'][0]['credentials']])
+        expect(CF::App::Credentials.find_all_by_service_tag('relational')).to match_array([
+                                                                                              vcap_services['cleardb-n/a'][0]['credentials'],
+                                                                                              vcap_services['cleardb-n/a'][1]['credentials']
+                                                                                          ])
       end
     end
   end
@@ -205,6 +265,28 @@ describe CF::App::Credentials do
         expect(CF::App::Credentials.find_by_service_label('github')).to eq(vcap_services['github-repo-2'][0]['credentials'])
         expect(CF::App::Credentials.find_by_service_label('redis')).to be_nil
         expect(CF::App::Credentials.find_by_service_label('non-existent')).to be_nil
+      end
+    end
+
+    describe '.find_all_by_service_label' do
+      it 'returns all services with the given label' do
+        expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
+        expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services['rediscloud-dev'][0]['credentials']])
+        expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
+                                                                                            vcap_services['github-repo-2'][0]['credentials'],
+                                                                                            vcap_services['github-repo-2'][1]['credentials']
+                                                                                        ])
+      end
+    end
+
+    describe '.find_all_by_tag' do
+      it 'returns all services with the given tag' do
+        expect(CF::App::Credentials.find_all_by_service_tag('non-existent')).to eq([])
+        expect(CF::App::Credentials.find_all_by_service_tag('redis')).to eq([vcap_services['rediscloud-dev'][0]['credentials']])
+        expect(CF::App::Credentials.find_all_by_service_tag('relational')).to match_array([
+                                                                                          vcap_services['cleardb'][0]['credentials'],
+                                                                                          vcap_services['cleardb'][1]['credentials']
+                                                                                      ])
       end
     end
   end

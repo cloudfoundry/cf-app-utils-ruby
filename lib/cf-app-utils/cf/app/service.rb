@@ -10,13 +10,21 @@ module CF::App
       end
 
       def find_by_tag(tag)
-        all.detect do |service|
+        find_all_by_tag(tag).first
+      end
+
+      def find_all_by_tag(tag)
+        all.select do |service|
           service['tags'].include?(tag)
         end
       end
 
       def find_by_label(label)
-        all.detect do |service|
+        find_all_by_label(label).first
+      end
+
+      def find_all_by_label(label)
+        all.select do |service|
           service['label'].match /^#{label}(-.*)?$/
         end
       end
