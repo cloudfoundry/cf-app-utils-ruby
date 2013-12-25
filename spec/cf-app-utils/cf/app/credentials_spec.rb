@@ -174,122 +174,78 @@ describe CF::App::Credentials do
         ]}
   end
 
-  describe 'v1 format' do
-    let(:vcap_services) { vcap_services_v1 }
+  describe 'for VCAP_SERVICES of' do
+    %w|v1 v2|.each do |version|
+      describe "#{version} format" do
 
-    before :each do
-      ENV['VCAP_SERVICES'] = JSON.dump(vcap_services_v1)
-      CF::App::Service.instance_variable_set :@services, nil
-    end
+        if version == "v1"
+          let(:vcap_services) { vcap_services_v1 }
+          let(:cleardb_key) {'cleardb-n/a'}
+          let(:rediscloud_dev_key) {'rediscloud-dev-n/a'}
+        else
+          let(:vcap_services) { vcap_services_v2 }
+          let(:cleardb_key) {'cleardb'}
+          let(:rediscloud_dev_key) {'rediscloud-dev'}
+        end
 
-    describe '.find_by_service_name' do
-      it 'returns credentials for the service with the given name' do
-        expect(CF::App::Credentials.find_by_service_name('master-db')).to eq(vcap_services['cleardb-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('slave-db')).to eq(vcap_services['cleardb-n/a'][1]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('queue')).to eq(vcap_services['rediscloud-dev-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('non-existent')).to be_nil
-      end
-    end
+        before :each do
+          ENV['VCAP_SERVICES'] = JSON.dump(vcap_services)
+          CF::App::Service.instance_variable_set :@services, nil
+        end
 
-    describe '.find_by_service_tag' do
-      it 'returns credentials for the service with the given tag' do
-        expect(CF::App::Credentials.find_by_service_tag('mysql')).to eq(vcap_services['cleardb-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('relational')).to eq(vcap_services['cleardb-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('redis')).to eq(vcap_services['rediscloud-dev-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('non-existent')).to be_nil
-      end
-    end
+        describe '.find_by_service_name' do
+          it 'returns credentials for the service with the given name' do
+            expect(CF::App::Credentials.find_by_service_name('master-db')).to eq(vcap_services[cleardb_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_name('slave-db')).to eq(vcap_services[cleardb_key][1]['credentials'])
+            expect(CF::App::Credentials.find_by_service_name('queue')).to eq(vcap_services[rediscloud_dev_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_name('non-existent')).to be_nil
+          end
+        end
 
-    describe '.find_by_service_label' do
-      it 'returns credentials for the service with the given label' do
-        expect(CF::App::Credentials.find_by_service_label('cleardb')).to eq(vcap_services['cleardb-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_label('rediscloud-dev')).to eq(vcap_services['rediscloud-dev-n/a'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_label('redis')).to be_nil
-        expect(CF::App::Credentials.find_by_service_label('non-existent')).to be_nil
-      end
-    end
+        describe '.find_by_service_tag' do
+          it 'returns credentials for the service with the given tag' do
+            expect(CF::App::Credentials.find_by_service_tag('mysql')).to eq(vcap_services[cleardb_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_tag('relational')).to eq(vcap_services[cleardb_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_tag('redis')).to eq(vcap_services[rediscloud_dev_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_tag('non-existent')).to be_nil
+          end
+        end
 
-    describe '.find_all_by_service_label' do
-      it 'returns all services with the given label' do
-        expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
-        expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services['rediscloud-dev-n/a'][0]['credentials']])
-        expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
-                                                                                            vcap_services['github-repo-2'][0]['credentials'],
-                                                                                            vcap_services['github-repo-2'][1]['credentials']
-                                                                                        ])
-      end
-    end
+        describe '.find_by_service_label' do
+          it 'returns credentials for the service with the given label' do
+            expect(CF::App::Credentials.find_by_service_label('cleardb')).to eq(vcap_services[cleardb_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_label('rediscloud-dev')).to eq(vcap_services[rediscloud_dev_key][0]['credentials'])
+            expect(CF::App::Credentials.find_by_service_label('redis')).to be_nil
+            expect(CF::App::Credentials.find_by_service_label('non-existent')).to be_nil
+          end
+        end
 
-    describe '.find_all_by_tag' do
-      it 'returns all services with the given tag' do
-        expect(CF::App::Credentials.find_all_by_service_tag('non-existent')).to eq([])
-        expect(CF::App::Credentials.find_all_by_service_tag('redis')).to eq([vcap_services['rediscloud-dev-n/a'][0]['credentials']])
-        expect(CF::App::Credentials.find_all_by_service_tag('relational')).to match_array([
-                                                                                              vcap_services['cleardb-n/a'][0]['credentials'],
-                                                                                              vcap_services['cleardb-n/a'][1]['credentials']
-                                                                                          ])
-      end
-    end
-  end
+        describe '.find_all_by_service_label' do
+          it 'returns all services with the given label' do
+            expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
+            expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+            expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
+                                                                                                vcap_services['github-repo-2'][0]['credentials'],
+                                                                                                vcap_services['github-repo-2'][1]['credentials']
+                                                                                            ])
+          end
+        end
 
-  describe 'v2 format' do
-    let(:vcap_services) { vcap_services_v2 }
+        describe '.find_all_by_tag' do
+          it 'returns all services with the given tag' do
+            expect(CF::App::Credentials.find_all_by_service_tag('non-existent')).to eq([])
+            expect(CF::App::Credentials.find_all_by_service_tag('redis')).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+            expect(CF::App::Credentials.find_all_by_service_tag('relational')).to match_array([
+                                                                                                  vcap_services[cleardb_key][0]['credentials'],
+                                                                                                  vcap_services[cleardb_key][1]['credentials']
+                                                                                              ])
+          end
+        end
 
-    before :each do
-      ENV['VCAP_SERVICES'] = JSON.dump(vcap_services_v2)
-      CF::App::Service.instance_variable_set :@services, nil
-    end
-
-    describe '.find_by_service_name' do
-      it 'returns credentials for the service with the given name' do
-        expect(CF::App::Credentials.find_by_service_name('master-db')).to eq(vcap_services['cleardb'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('slave-db')).to eq(vcap_services['cleardb'][1]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('queue')).to eq(vcap_services['rediscloud-dev'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_name('non-existent')).to be_nil
-      end
-    end
-
-    describe '.find_by_service_tag' do
-      it 'returns credentials for the service with the given tag' do
-        expect(CF::App::Credentials.find_by_service_tag('mysql')).to eq(vcap_services['cleardb'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('relational')).to eq(vcap_services['cleardb'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('redis')).to eq(vcap_services['rediscloud-dev'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_tag('non-existent')).to be_nil
-      end
-    end
-
-    describe '.find_by_service_label' do
-      it 'returns credentials for the service with the given label' do
-        expect(CF::App::Credentials.find_by_service_label('cleardb')).to eq(vcap_services['cleardb'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_label('rediscloud-dev')).to eq(vcap_services['rediscloud-dev'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_label('github')).to eq(vcap_services['github-repo-2'][0]['credentials'])
-        expect(CF::App::Credentials.find_by_service_label('redis')).to be_nil
-        expect(CF::App::Credentials.find_by_service_label('non-existent')).to be_nil
-      end
-    end
-
-    describe '.find_all_by_service_label' do
-      it 'returns all services with the given label' do
-        expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
-        expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services['rediscloud-dev'][0]['credentials']])
-        expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
-                                                                                            vcap_services['github-repo-2'][0]['credentials'],
-                                                                                            vcap_services['github-repo-2'][1]['credentials']
-                                                                                        ])
-      end
-    end
-
-    describe '.find_all_by_tag' do
-      it 'returns all services with the given tag' do
-        expect(CF::App::Credentials.find_all_by_service_tag('non-existent')).to eq([])
-        expect(CF::App::Credentials.find_all_by_service_tag('redis')).to eq([vcap_services['rediscloud-dev'][0]['credentials']])
-        expect(CF::App::Credentials.find_all_by_service_tag('relational')).to match_array([
-                                                                                          vcap_services['cleardb'][0]['credentials'],
-                                                                                          vcap_services['cleardb'][1]['credentials']
-                                                                                      ])
       end
     end
   end
+
 end
 
 
