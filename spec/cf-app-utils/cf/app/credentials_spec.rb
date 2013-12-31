@@ -100,7 +100,7 @@ describe CF::App::Credentials do
                 ],
                 'plan' => 'scream',
                 'credentials' => {
-                    'jdbcUrl' => 'jdbc:mysql://640cd7d903851807:cc89b00738b95a69@cleardb.example.com:3306/db_29098221a2dc0c59',
+                    'jdbcUrl' => 'jdbc:mysql://640cd7d903851807:cc89b00738b95a69@cleardb.example.com:3306/db_29098221a2dc0c59-v2',
                     'uri' => 'mysql://640cd7d903851807:cc89b00738b95a69@cleardb.example.com:3306/db_29098221a2dc0c59?reconnect=true',
                     'name' => 'db_29098221a2dc0c59',
                     'hostname' => 'cleardb.example.com',
@@ -118,7 +118,7 @@ describe CF::App::Credentials do
                 ],
                 'plan' => 'scream',
                 'credentials' => {
-                    'jdbcUrl' => 'jdbc:mysql://1b66152fc013c97e:7276a72689ddf6f3@cleardb.example.com:3306/db_f542acb65cfc54a1',
+                    'jdbcUrl' => 'jdbc:mysql://1b66152fc013c97e:7276a72689ddf6f3@cleardb.example.com:3306/db_f542acb65cfc54a1-v2',
                     'uri' => 'mysql://1b66152fc013c97e:7276a72689ddf6f3@cleardb.example.com:3306/db_f542acb65cfc54a1?reconnect=true',
                     'name' => 'db_f542acb65cfc54a1',
                     'hostname' => 'cleardb.example.com',
@@ -139,7 +139,7 @@ describe CF::App::Credentials do
                 ],
                 'plan' => '100mb',
                 'credentials' => {
-                    'port' => '17345',
+                    'port' => '17345-v2',
                     'hostname' => 'garantiadata.example.com',
                     'password' => '3a9c2eb0ed895ab1'
                 }
@@ -155,8 +155,8 @@ describe CF::App::Credentials do
                 ],
                 'plan' => 'free',
                 'credentials' => {
-                    'username' => 'octocat',
-                    'access_token' => 'some-token'
+                    'username' => 'octocat-v2',
+                    'access_token' => 'some-token-1'
                 }
             },
             {
@@ -167,8 +167,8 @@ describe CF::App::Credentials do
                 ],
                 'plan' => 'free',
                 'credentials' => {
-                    'username' => 'octocat',
-                    'access_token' => 'some-token'
+                    'username' => 'octocat-v2',
+                    'access_token' => 'some-token-2'
                 }
             }
         ]}
@@ -180,12 +180,12 @@ describe CF::App::Credentials do
 
         if version == "v1"
           let(:vcap_services) { vcap_services_v1 }
-          let(:cleardb_key) {'cleardb-n/a'}
-          let(:rediscloud_dev_key) {'rediscloud-dev-n/a'}
+          let(:cleardb_key) { 'cleardb-n/a' }
+          let(:rediscloud_dev_key) { 'rediscloud-dev-n/a' }
         else
           let(:vcap_services) { vcap_services_v2 }
-          let(:cleardb_key) {'cleardb'}
-          let(:rediscloud_dev_key) {'rediscloud-dev'}
+          let(:cleardb_key) { 'cleardb' }
+          let(:rediscloud_dev_key) { 'rediscloud-dev' }
         end
 
         before :each do
