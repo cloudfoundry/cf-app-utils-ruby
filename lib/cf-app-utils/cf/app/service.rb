@@ -10,30 +10,29 @@ module CF::App
       end
 
       def find_by_tag(tag)
-        all.detect do |service|
+        find_all_by_tag(tag).first
+      end
+
+      def find_all_by_tag(tag)
+        all.select do |service|
           service['tags'].include?(tag)
         end
       end
 
       def find_by_label(label)
-        all.detect do |service|
-          service['label'] == label
+        find_all_by_label(label).first
+      end
+
+      def find_all_by_label(label)
+        all.select do |service|
+          service['label'].match /^#{label}(-.*)?$/
         end
       end
 
       private
 
       def all
-        @services ||= begin
-          services = JSON.parse(ENV['VCAP_SERVICES']).map(&:last).flatten
-          services.map do |service|
-            service['label'] =~ /^(.*)-(.*)$/
-            label, version = $1, $2
-            service['label'] = label
-            service['version'] = version
-            service
-          end
-        end
+        @services ||= JSON.parse(ENV['VCAP_SERVICES']).values.flatten
       end
     end
   end
