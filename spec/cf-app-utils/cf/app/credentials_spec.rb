@@ -224,7 +224,7 @@ describe CF::App::Credentials do
           it 'returns all services with the given label' do
             expect(CF::App::Credentials.find_all_by_service_label('non-existent')).to eq([])
             expect(CF::App::Credentials.find_all_by_service_label('rediscloud-dev')).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
-            expect(CF::App::Credentials.find_all_by_service_label('github')).to match_array([
+            expect(CF::App::Credentials.find_all_by_service_label('github-repo')).to match_array([
                                                                                                 vcap_services['github-repo-2'][0]['credentials'],
                                                                                                 vcap_services['github-repo-2'][1]['credentials']
                                                                                             ])
@@ -241,11 +241,9 @@ describe CF::App::Credentials do
                                                                                               ])
           end
         end
-
       end
     end
   end
-
 end
 
 
