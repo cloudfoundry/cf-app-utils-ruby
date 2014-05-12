@@ -215,10 +215,10 @@ describe CF::App::Credentials do
           end
         end
 
-        describe '.find_by_all_service_tags' do
-          it 'returns credentials for the service with all of the given tags' do
-            expect(CF::App::Credentials.find_by_all_service_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
-            expect(CF::App::Credentials.find_by_all_service_tags(['redis', 'key-value'])).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+        describe '.find_all_services_with_all_tags' do
+          it 'returns credentials for the services with all of the given tags' do
+            expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
+            expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value'])).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
           end
 
           context 'when the tags element is missing' do
@@ -229,7 +229,7 @@ describe CF::App::Credentials do
             end
 
             it 'returns empty array' do
-              expect(CF::App::Credentials.find_by_all_service_tags(['redis', 'key-value'])).to eq([])
+              expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value'])).to eq([])
             end
           end
         end
