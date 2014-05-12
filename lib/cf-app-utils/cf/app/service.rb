@@ -22,7 +22,7 @@ module CF::App
       def find_all_by_tags(tags)
         all.select do |service|
           tags.inject(true) do |contains_all_tags, tag|
-            contains_all_tags && service['tags'].include?(tag)
+            contains_all_tags && service['tags'] && service['tags'].include?(tag)
           end
         end
       end

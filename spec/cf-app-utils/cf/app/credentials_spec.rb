@@ -188,9 +188,13 @@ describe CF::App::Credentials do
           let(:rediscloud_dev_key) { 'rediscloud-dev' }
         end
 
-        before :each do
+        def set_services
           ENV['VCAP_SERVICES'] = JSON.dump(vcap_services)
           CF::App::Service.instance_variable_set :@services, nil
+        end
+
+        before :each do
+          set_services
         end
 
         describe '.find_by_service_name' do
@@ -215,6 +219,18 @@ describe CF::App::Credentials do
           it 'returns credentials for the service with all of the given tags' do
             expect(CF::App::Credentials.find_by_all_service_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
             expect(CF::App::Credentials.find_by_all_service_tags(['redis', 'key-value'])).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+          end
+
+          context 'when the tags element is missing' do
+
+            before do
+              vcap_services[rediscloud_dev_key][0].delete('tags')
+              set_services
+            end
+
+            it 'returns empty array' do
+              expect(CF::App::Credentials.find_by_all_service_tags(['redis', 'key-value'])).to eq([])
+            end
           end
         end
 

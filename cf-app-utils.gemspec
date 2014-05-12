@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'cf-app-utils'
-  spec.version       = '0.2'
+  spec.version       = '0.3'
   spec.authors       = ['Cloud Foundry']
   spec.email         = %w(vcap-dev@cloudfoundry.org)
   spec.description   = %q{Helper methods for apps running on Cloud Foundry}
