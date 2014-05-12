@@ -211,6 +211,13 @@ describe CF::App::Credentials do
           end
         end
 
+        describe '.find_by_all_service_tags' do
+          it 'returns credentials for the service with all of the given tags' do
+            expect(CF::App::Credentials.find_by_all_service_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
+            expect(CF::App::Credentials.find_by_all_service_tags(['redis', 'key-value'])).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+          end
+        end
+
         describe '.find_by_service_label' do
           it 'returns credentials for the service with the given label' do
             expect(CF::App::Credentials.find_by_service_label('cleardb')).to eq(vcap_services[cleardb_key][0]['credentials'])

@@ -19,6 +19,14 @@ module CF::App
         end
       end
 
+      def find_all_by_tags(tags)
+        all.select do |service|
+          tags.inject(true) do |contains_all_tags, tag|
+            contains_all_tags && service['tags'].include?(tag)
+          end
+        end
+      end
+
       def find_by_label(label)
         find_all_by_label(label).first
       end
