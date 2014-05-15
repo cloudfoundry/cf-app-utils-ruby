@@ -9,7 +9,8 @@ describe CF::App::Credentials do
           'label'       => 'cleardb-n/a',
           'tags'        => [
             'mysql',
-            'relational'
+            'relational',
+            'oracle'
           ],
           'plan'        => 'scream',
           'credentials' => {
@@ -96,7 +97,8 @@ describe CF::App::Credentials do
           'label'       => 'cleardb',
           'tags'        => [
             'mysql',
-            'relational'
+            'relational',
+            'oracle'
           ],
           'plan'        => 'scream',
           'credentials' => {
@@ -216,19 +218,43 @@ describe CF::App::Credentials do
         end
 
         describe '.find_all_services_with_all_tags' do
-          it 'returns credentials for the services with all of the given tags' do
-            expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
-            expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value'])).to eq([vcap_services[rediscloud_dev_key][0]['credentials']])
+          context 'when searching by empty array' do
+            it 'returns empty array because returning all services is not useful here' do
+              expect(CF::App::Credentials.find_all_services_with_all_tags([])).to eq([])
+            end
           end
 
-          context 'when the tags element is missing' do
+          context 'when a service has exactly the same tag list as search' do
+            it 'returns credentials for the service' do
+              expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational', 'oracle'])).to eq([vcap_services[cleardb_key][0]['credentials']])
+            end
+          end
 
+          context 'when a service has a superset or equal set of searched-for tags' do
+            it 'returns credentials for the service(s)' do
+              expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
+            end
+          end
+
+          context 'when a service has a subset of searched-for tags' do
+            it 'does not return the service' do
+              expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value', 'slow'])).to eq([])
+            end
+          end
+
+          context 'when a service has no tags in common with searched-for tags' do
+            it 'does not return the service' do
+              expect(CF::App::Credentials.find_all_services_with_all_tags(['a', 'nonexistent', 'service'])).to eq([])
+            end
+          end
+
+          context 'when a service has no tags element' do
             before do
               vcap_services[rediscloud_dev_key][0].delete('tags')
               set_services
             end
 
-            it 'returns empty array' do
+            it 'does not return the service' do
               expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value'])).to eq([])
             end
           end
