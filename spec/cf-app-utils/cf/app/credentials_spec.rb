@@ -217,34 +217,34 @@ describe CF::App::Credentials do
           end
         end
 
-        describe '.find_all_services_with_all_tags' do
+        describe '.find_all_by_all_service_tags' do
           context 'when searching by empty array' do
             it 'returns empty array because returning all services is not useful here' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags([])).to eq([])
+              expect(CF::App::Credentials.find_all_by_all_service_tags([])).to eq([])
             end
           end
 
           context 'when a service has exactly the same tag list as search' do
             it 'returns credentials for the service' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational', 'oracle'])).to eq([vcap_services[cleardb_key][0]['credentials']])
+              expect(CF::App::Credentials.find_all_by_all_service_tags(['mysql', 'relational', 'oracle'])).to eq([vcap_services[cleardb_key][0]['credentials']])
             end
           end
 
           context 'when a service has a superset or equal set of searched-for tags' do
             it 'returns credentials for the service(s)' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
+              expect(CF::App::Credentials.find_all_by_all_service_tags(['mysql', 'relational'])).to eq([vcap_services[cleardb_key][0]['credentials'], vcap_services[cleardb_key][1]['credentials']])
             end
           end
 
           context 'when a service has a subset of searched-for tags' do
             it 'does not return the service' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value', 'slow'])).to eq([])
+              expect(CF::App::Credentials.find_all_by_all_service_tags(['redis', 'key-value', 'slow'])).to eq([])
             end
           end
 
           context 'when a service has no tags in common with searched-for tags' do
             it 'does not return the service' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags(['a', 'nonexistent', 'service'])).to eq([])
+              expect(CF::App::Credentials.find_all_by_all_service_tags(['a', 'nonexistent', 'service'])).to eq([])
             end
           end
 
@@ -255,7 +255,7 @@ describe CF::App::Credentials do
             end
 
             it 'does not return the service' do
-              expect(CF::App::Credentials.find_all_services_with_all_tags(['redis', 'key-value'])).to eq([])
+              expect(CF::App::Credentials.find_all_by_all_service_tags(['redis', 'key-value'])).to eq([])
             end
           end
         end
