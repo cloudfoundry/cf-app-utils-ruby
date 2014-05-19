@@ -20,6 +20,12 @@ module CF::App
         end
       end
 
+      # Returns credentials for the service instances with all the given +tags+.
+      def find_all_by_all_service_tags(tags)
+        return [] if tags.empty?
+
+        Service.find_all_by_tags(tags).map { |service| service['credentials'] }
+      end
 
       # Returns credentials for the first service instance with the given +label+.
       def find_by_service_label(label)
