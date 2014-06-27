@@ -26,10 +26,7 @@ Require and use the gem in your application:
 require 'cf-app-utils'
 ```
 
-### CF::App::Credentials.find\_by\_service\_*
-
-Returns the credentials hash for a given service that you have bound to
-your application.
+You can then grab the credentials hash:
 
 ```ruby
 # Get credentials for the service with the given name
@@ -43,4 +40,10 @@ CF::App::Credentials.find_by_service_label('cleardb')
 
 # Get credentials for all services that match all of the given tags
 CF::App::Credentials.find_all_by_all_service_tags(['cleardb', 'relational'])
+```
+
+The keys in the hash are strings. For example, to get the `uri` value you can do:
+
+```ruby
+cleardb_url = credentials['uri']
 ```
