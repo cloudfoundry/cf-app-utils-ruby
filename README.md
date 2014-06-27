@@ -42,7 +42,8 @@ CF::App::Credentials.find_by_service_label('cleardb')
 CF::App::Credentials.find_all_by_all_service_tags(['cleardb', 'relational'])
 ```
 
-Then take the value you need from the hash:
+The keys in the hash are strings. For example, to get the `uri` value you can do:
 
 ```ruby
 cleardb_url = credentials['uri']
+```
