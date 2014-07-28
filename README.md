@@ -35,11 +35,17 @@ CF::App::Credentials.find_by_service_name('master-db')
 # Get credentials for the first service with the given tag
 CF::App::Credentials.find_by_service_tag('relational')
 
-# Get credentials for the first service with the given label
-CF::App::Credentials.find_by_service_label('cleardb')
+# Get credentials for all services with the given tag
+CF::APP::Credentials.find_all_by_service_tag('relational')
 
 # Get credentials for all services that match all of the given tags
 CF::App::Credentials.find_all_by_all_service_tags(['cleardb', 'relational'])
+
+# Get credentials for the first service with the given label
+CF::App::Credentials.find_by_service_label('cleardb')
+
+# Get credentials for all services with the given label
+CF::App::Credentials.find_all_by_service_label('cleardb')
 ```
 
 The keys in the hash are strings. For example, to get the `uri` value you can do:
