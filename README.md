@@ -2,6 +2,10 @@
 
 Helper methods for apps running on Cloud Foundry.
 
+## Download
+
+https://rubygems.org/gems/cf-app-utils
+
 ## Installation
 
 Add this line to your application's Gemfile:
