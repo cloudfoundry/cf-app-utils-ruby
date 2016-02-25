@@ -61,6 +61,6 @@ cleardb_url = credentials['uri']
 ```
 
 ```ruby
-# Inject your own environment variables
+# Inject your own environment variables for testing
 CF::App::Credentials.new(my_env)
 ```
