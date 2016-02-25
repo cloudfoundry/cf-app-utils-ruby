@@ -30,7 +30,9 @@ Require and use the gem in your application:
 require 'cf-app-utils'
 ```
 
-You can then grab the credentials hash:
+## Credentials
+
+grabbing the credentials hash:
 
 ```ruby
 # Get credentials for the service instance with the given name
