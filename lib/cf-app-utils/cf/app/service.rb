@@ -43,7 +43,11 @@ module CF::App
       private
 
       def all
-        @services ||= JSON.parse(@env['VCAP_SERVICES']).values.flatten
+        @services ||= begin
+          JSON.parse(@env['VCAP_SERVICES']).values.flatten
+        rescue TypeError
+          []
+        end
       end
   end
 end
