@@ -302,6 +302,16 @@ describe CF::App::Credentials do
       end
     end
   end
+
+  describe 'for missing VCAP_SERVICES' do
+    before :each do
+      ENV['VCAP_SERVICES'] = nil
+    end
+
+    describe '.find_by_service_name' do
+      it 'returns nil' do
+        expect(CF::App::Credentials.find_by_service_name('empty-env-var')).to be_nil
+      end
+    end
+  end
 end
-
-
